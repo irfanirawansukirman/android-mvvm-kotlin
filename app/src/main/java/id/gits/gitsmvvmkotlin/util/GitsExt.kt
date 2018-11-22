@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import id.co.gits.gitsdriver.utils.GitsHelper
 import id.gits.gitsmvvmkotlin.R
@@ -38,6 +39,33 @@ fun AppCompatActivity.replaceFragmentInActivityWithBackStack(fragment: Fragment,
     supportFragmentManager.transact {
         replace(frameId, fragment)
         addToBackStack(TAG)
+    }
+}
+
+/**
+ * Function for controlling keyboard visibility in activity
+ */
+fun AppCompatActivity.keyboardVisibility(view: View?, context: Context?, isOpen: Boolean) {
+    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+    if (isOpen) {
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    } else {
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+}
+
+/**
+ * Function for controlling keyboard visibility in fragment
+ */
+fun Fragment.keyboardVisibility(view: View?, context: Context?, isOpen: Boolean) {
+    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+    if (isOpen) {
+        view?.requestFocus()
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    } else {
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
 
@@ -84,8 +112,8 @@ fun RecyclerView.horizontalListStyle() {
 }
 
 fun View.showSnackbarWithCustomColor(view: android.view.View, message: String,
-                                textColor: Int, backgroundColor: Int,
-                                duration: Int) {
+                                     textColor: Int, backgroundColor: Int,
+                                     duration: Int) {
     val finalMessage = if (TextUtils.isEmpty(message)) {
         GitsHelper.Const.SERVER_ERROR_MESSAGE_DEFAULT
     } else {

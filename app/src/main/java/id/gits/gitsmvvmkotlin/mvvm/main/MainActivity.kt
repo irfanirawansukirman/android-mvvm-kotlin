@@ -17,6 +17,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         viewMainBinding = DataBindingUtil.setContentView(this, R.layout.main_activity)
         viewMainBinding.apply {
+            
             setupToolbar()
             setupMainFragment()
 
